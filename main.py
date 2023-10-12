@@ -1,9 +1,3 @@
-# This is a sample Python script.
-import numpy
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
 words = [
     "maħamadu",
     "initʃe",
@@ -146,7 +140,6 @@ def calculate_combinations():
                     letters.append(letter)
 
     print(letters)
-
 
     # for each letter, collect all existing combinations: which letter can precede it, which can follow it,
     # based on the words. If a letter before is one of the combining characters, then it is considered as part of the
