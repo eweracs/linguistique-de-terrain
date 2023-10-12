@@ -181,4 +181,5 @@ def calculate_combinations():
         os.remove(desktop + "/combinations.xlsx")
     shutil.move("combinations.xlsx", desktop + "/combinations.xlsx")
 
+
 calculate_combinations()
