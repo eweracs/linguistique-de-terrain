@@ -109,5 +109,41 @@ def calculate_combinations():
     for phoneme in pairs:
         print(phoneme, pairs[phoneme])
 
+    # Write an xlsx file with a matrix of all possible pairs. The matrix should have the phonemes as column headers and
+    # row headers.
+
+    workbook = xlsxwriter.Workbook("pairs.xlsx")
+    worksheet = workbook.add_worksheet()
+    row = 1
+    col = 0
+    for key in pairs.keys():
+        worksheet.write(row, col, key)
+        row += 1
+
+    row = 0
+    col = 1
+    for key in pairs.keys():
+        worksheet.write(row, col, key)
+        col += 1
+
+    # now we have a matrix with the phonemes as column headers and row headers. We need to fill in the matrix with the
+    # pairs. For each pair, we need to find the column and row header that corresponds to the phoneme that is different
+    # between the two words.
+    for index, key in enumerate(pairs.keys()):
+        for other_index, other_key in enumerate(pairs.keys()):
+            if other_key in pairs[key].keys():
+                worksheet.write(index + 1, other_index + 1, ", ".join(pairs[key][other_key]))
+
+
+
+
+    workbook.close()
+
+
+    # save the sheet to the desktop, overwrite if it already exists
+    if os.path.exists(desktop + "/pairs.xlsx"):
+        os.remove(desktop + "/pairs.xlsx")
+    shutil.move("pairs.xlsx", desktop + "/pairs.xlsx")
+
 
 calculate_combinations()
