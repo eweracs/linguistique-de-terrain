@@ -73,5 +73,41 @@ def calculate_combinations():
         os.remove(desktop + "/combinations.xlsx")
     shutil.move("combinations.xlsx", desktop + "/combinations.xlsx")
 
+    # in the word data, find pairs of words that differ by only one phoneme. For example, the words "so" and "su" differ
+    # by only one phoneme. The same applies to the words "koko" and "kolo". The words "koko" and "kolo" would thus be
+    # considered a pair.
+    # For each pair, find the phoneme that is different between the two words. In the case of "koko" and "kolo", the
+    # phoneme that is different is "k". The phoneme "k" is thus the phoneme in question. Build a dictionary with the
+    # phonemes as keys and the pairs as values. The phoneme that is different is a new key for a dictionary in which
+    # the pair is stored as a list item. For instance, the pair "koko" and "kolo" would result in the following entry
+    # for "k": {"k": {"l": ["koko", "kolo"]}}. The pair "so" and "su" would result in the following entry for "u":
+    # {"u": {"o": ["so", "su"]}}. The pair "musomani" and "musomanu" would result in the following entry for "i":
+    # {"i": {"u": ["musomani", "musomanu"]}}.
+    pairs = {}
+    for word in words:
+        for other_word in words:
+                    if word != other_word:
+                        if len(word) == len(other_word):
+                            different_phonemes = 0
+                            for i in range(len(word)):
+                                if word[i] != other_word[i]:
+                                    different_phonemes += 1
+                            if different_phonemes == 1:
+                                for i in range(len(word)):
+                                    if word[i] != other_word[i]:
+                                        if word[i] not in pairs.keys():
+                                            pairs[word[i]] = {}
+                                        if other_word[i] not in pairs[word[i]].keys():
+                                            pairs[word[i]][other_word[i]] = []
+                                        pairs[word[i]][other_word[i]].append(word)
+                                        pairs[word[i]][other_word[i]].append(other_word)
+
+    for key in pairs.keys():
+        for other_key in pairs[key].keys():
+            pairs[key][other_key] = list(set(pairs[key][other_key]))
+
+    for phoneme in pairs:
+        print(phoneme, pairs[phoneme])
+
 
 calculate_combinations()
