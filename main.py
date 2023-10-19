@@ -68,7 +68,9 @@ def calculate_combinations():
     # save the sheet to the desktop, overwrite if it already exists
     import os
     import shutil
-    desktop = "/Users/sebastiancarewe/Desktop"
+    # get the desktop path
+
+    desktop = os.path.expanduser("~/Desktop")
     if os.path.exists(desktop + "/combinations.xlsx"):
         os.remove(desktop + "/combinations.xlsx")
     shutil.move("combinations.xlsx", desktop + "/combinations.xlsx")
