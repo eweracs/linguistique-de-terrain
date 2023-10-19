@@ -86,21 +86,21 @@ def calculate_combinations():
     pairs = {}
     for word in words:
         for other_word in words:
-                    if word != other_word:
-                        if len(word) == len(other_word):
-                            different_phonemes = 0
-                            for i in range(len(word)):
-                                if word[i] != other_word[i]:
-                                    different_phonemes += 1
-                            if different_phonemes == 1:
-                                for i in range(len(word)):
-                                    if word[i] != other_word[i]:
-                                        if word[i] not in pairs.keys():
-                                            pairs[word[i]] = {}
-                                        if other_word[i] not in pairs[word[i]].keys():
-                                            pairs[word[i]][other_word[i]] = []
-                                        pairs[word[i]][other_word[i]].append(word)
-                                        pairs[word[i]][other_word[i]].append(other_word)
+            if word != other_word:
+                if len(word) == len(other_word):
+                    different_phonemes = 0
+                    for i in range(len(word)):
+                        if word[i] != other_word[i]:
+                            different_phonemes += 1
+                    if different_phonemes == 1:
+                        for i in range(len(word)):
+                            if word[i] != other_word[i]:
+                                if word[i] not in pairs.keys():
+                                    pairs[word[i]] = {}
+                                if other_word[i] not in pairs[word[i]].keys():
+                                    pairs[word[i]][other_word[i]] = []
+                                pairs[word[i]][other_word[i]].append(word)
+                                pairs[word[i]][other_word[i]].append(other_word)
 
     for key in pairs.keys():
         for other_key in pairs[key].keys():
@@ -134,11 +134,7 @@ def calculate_combinations():
             if other_key in pairs[key].keys():
                 worksheet.write(index + 1, other_index + 1, ", ".join(pairs[key][other_key]))
 
-
-
-
     workbook.close()
-
 
     # save the sheet to the desktop, overwrite if it already exists
     if os.path.exists(desktop + "/pairs.xlsx"):
