@@ -16,33 +16,53 @@ def calculate_combinations():
                 elif letter not in letters and letter not in combining_characters:
                     letters.append(letter)
 
-    print(letters)
+    # for each letter, collect all existing combinations. Each list entry needs to consist of the phoneme, the phoneme
+    # that precedes it and which phoneme supersedes it, as well as the word in which this combination was found. The
+    # phoneme in question is marked with an underscore. Make a dictionary with the letters as keys and the combinations
+    # as values. So, for example, for the word "etɔgɔ", I would expect an entry like this: {"t": ["e_ɔ", "etetɔgɔ"]]}.
+    # When a different word contains t, like the word "ajehakɛto", I expect the entry for "t" to be updated to include
+    # the new combination: {"t": ["e_ɔ", "etetɔgɔ", "ɛ_o", "ajehakɛto"]}. When a phoneme is the first letter of a word,
+    # the preceding phoneme is an empty string, which is marked with "#". When a phoneme is the last letter of a word,
+    # the superseding phoneme is likewise an empty string, which is marked with "#". The word "teɾimuso" would thus
+    # result in the following entry for "t": {"t": ["#_e", "teɾimuso"]}. Don't forget that a word can also be just one
+    # letter long, like the word "a". In this case, the preceding and superseding phonemes are both empty strings.
+    # The underscore is used to separate the preceding and superseding phonemes from the phoneme in question. The
+    # underscore thus marks the phoneme in question. The word "a" would thus result in the following entry for "a":
+    # {"a": ["#_#"]}. The word "ãu" would result in the following entry for "ã": {"ã": ["#_u", "ãu"]}. The word "ana"
+    # would result in the following entry for "a": {"a": ["#_n", "ana"], ["n_#", "ana"}. The word "auana" would result
+    # in the following entry for "a": {"a": ["#_u", "auana"], ["u_n", "auana"], ["n_#", "auana"]}.
+    # The word "musomani" would result in the following entry for "m": {"m": ["#_u", "musomani"], ["o_a", "musomani"]}
 
-    # for each letter, collect all existing combinations: which letter can precede it, which can follow it,
-    # based on the words. If the letter after the current letter is a combining character, it is ignored.
-    combinations = {}
+    combinations_dictionary = {}
     for letter in letters:
-        combinations[letter] = {"before": [], "after": []}
         for word in words:
             if letter in word:
-                if word.index(letter) > 0:
-                    if word[word.index(letter) - 1] not in combinations[letter]["before"]:
-                        combinations[letter]["before"].append(word[word.index(letter) - 1])
-                if word.index(letter) < len(word) - 1:
-                    if word[word.index(letter) + 1] not in combining_characters:
-                        if word[word.index(letter) + 1] not in combinations[letter]["after"]:
-                            combinations[letter]["after"].append(word[word.index(letter) + 1])
+                if letter not in combinations_dictionary.keys():
+                    combinations_dictionary[letter] = []
+                if word.index(letter) == 0:
+                    if word.index(letter) < len(word) - 1:
+                        if word[word.index(letter) + 1] in combining_characters:
+                            combinations_dictionary[letter].append(
+                                ["#_" + word[word.index(letter) + 1], word])
+                        else:
+                            combinations_dictionary[letter].append(["#_" + word[word.index(letter) + 1], word])
+                    else:
+                        combinations_dictionary[letter].append(["#_#", word])
+
+    # print(combinations_dictionary)
 
     # transform the combinations into an xlsx file.
-    # For each letter, create a sheet with the letters that can precede it and the letters that can follow it
     import xlsxwriter
-    workbook = xlsxwriter.Workbook('combinations.xlsx')
-    for letter in combinations:
-        worksheet = workbook.add_worksheet(letter)
-        worksheet.write(0, 0, "Before")
-        worksheet.write(0, 1, "After")
-        worksheet.write_column(1, 0, combinations[letter]["before"])
-        worksheet.write_column(1, 1, combinations[letter]["after"])
+    workbook = xlsxwriter.Workbook("combinations.xlsx")
+    worksheet = workbook.add_worksheet()
+    row = 0
+    col = 0
+    for key in combinations_dictionary.keys():
+        worksheet.write(row, col, key)
+        for item in combinations_dictionary[key]:
+            worksheet.write(row, col + 1, item[0])
+            worksheet.write(row, col + 2, item[1])
+            row += 1
     workbook.close()
 
     # save the sheet to the desktop, overwrite if it already exists
